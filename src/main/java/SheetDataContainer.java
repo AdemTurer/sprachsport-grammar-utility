@@ -3,7 +3,7 @@ import java.util.TreeMap;
 
 public class SheetDataContainer {
     public enum DATASHEETS {
-        ADJECTIVES_DATA, ADVERBS_DATA, CONJUNCTIONS_DATA, INTERJECTIONS_DATA, NOUNS_DATA, PREPOSITIONS_DATA, PRONOUNS_DATA, VERBS_DATA
+        ADJECTIVES_DATA, ADVERBS_DATA, CONJUNCTIONS_DATA, INTERJECTIONS_DATA, NOUNS_DATA, PREPOSITIONS_DATA, PRONOUNS_DATA, VERBS_DATA, MISC_DATA
     }
 
     public Map<String, Object[]> adjectives_data = new TreeMap<>();
@@ -14,8 +14,9 @@ public class SheetDataContainer {
     public Map<String, Object[]> prepositions_data = new TreeMap<>();
     public Map<String, Object[]> pronouns_data = new TreeMap<>();
     public Map<String, Object[]> verbs_data = new TreeMap<>();
+    public Map<String, Object[]> misc_data = new TreeMap<>();
 
-    public Map[] datasheets = {adjectives_data, adverbs_data, conjunctions_data, interjections_data, nouns_data, prepositions_data, pronouns_data ,verbs_data};
+    public Map[] datasheets = {adjectives_data, adverbs_data, conjunctions_data, interjections_data, nouns_data, prepositions_data, pronouns_data ,verbs_data, misc_data};
 
     public SheetDataContainer() {
         for(Map datasheet : datasheets){
@@ -33,6 +34,7 @@ public class SheetDataContainer {
             case PREPOSITIONS_DATA -> prepositions_data.put(Integer.toString(prepositions_data.size() + 1), rowData);
             case PRONOUNS_DATA -> pronouns_data.put(Integer.toString(pronouns_data.size() + 1), rowData);
             case VERBS_DATA -> verbs_data.put(Integer.toString(verbs_data.size() + 1), rowData);
+            case MISC_DATA -> misc_data.put(Integer.toString(misc_data.size() + 1), rowData);
         }
     }
 }

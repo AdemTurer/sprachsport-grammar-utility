@@ -24,12 +24,14 @@ public class Main  {
         int result = fileChooser.showOpenDialog(fileSelectionDialog);
         if (result != JFileChooser.APPROVE_OPTION){
             fileSelectionDialog.dispose();
+            System.exit(0);
             return;
         }
         File selectedFile = fileChooser.getSelectedFile();
         if (!selectedFile.getName().endsWith(".txt")) {
             log.info("Your document must be a .txt file.");
             fileSelectionDialog.dispose();
+            System.exit(0);
             return;
         }
         fileSelectionDialog.dispose();
@@ -72,43 +74,63 @@ public class Main  {
         XSSFSheet prepositions_sheet = workbook.createSheet("Prepositions");
         XSSFSheet pronouns_sheet = workbook.createSheet("Pronouns");
         XSSFSheet verbs_sheet = workbook.createSheet("Verbs");
+        XSSFSheet misc_sheet = workbook.createSheet("Miscellaneous");
+
         SheetDataContainer sheetData = new SheetDataContainer();
 
         for(TaggedWord twd : parsedFullTextWithWordCount.keySet()) {
+            String count = Integer.toString(parsedFullTextWithWordCount.get(twd));
+            System.out.println("Word: " + twd.word() + ", Tag: " + twd.tag() + ", Count: " + count);
+
             switch (twd.tag()) {
-                case "JJ" -> sheetData.push(new Object[]{twd.word(), "Adjective", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.ADJECTIVES_DATA);
-                case "JJR" -> sheetData.push(new Object[]{twd.word(), "Adjective, comparative", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.ADJECTIVES_DATA);
-                case "JJS" -> sheetData.push(new Object[]{twd.word(), "Adjective, superlative", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.ADJECTIVES_DATA);
+                default -> sheetData.push(new Object[]{twd.word(), twd.tag(), count}, SheetDataContainer.DATASHEETS.MISC_DATA);
 
-                case "RB" -> sheetData.push(new Object[]{twd.word(), "Adverb", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
-                case "RBR" -> sheetData.push(new Object[]{twd.word(), "Adverb, comparative", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
-                case "RBS" -> sheetData.push(new Object[]{twd.word(), "Adverb, superlative", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
-                case "WRB" -> sheetData.push(new Object[]{twd.word(), "Adverb, Wh-", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
+                case "JJ" -> sheetData.push(new Object[]{twd.word(), "Adjective", count}, SheetDataContainer.DATASHEETS.ADJECTIVES_DATA);
+                case "JJR" -> sheetData.push(new Object[]{twd.word(), "Adjective, comparative", count}, SheetDataContainer.DATASHEETS.ADJECTIVES_DATA);
+                case "JJS" -> sheetData.push(new Object[]{twd.word(), "Adjective, superlative", count}, SheetDataContainer.DATASHEETS.ADJECTIVES_DATA);
 
-                case "CC" -> sheetData.push(new Object[]{twd.word(), "Conjunction, coordinating", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.CONJUNCTIONS_DATA);
+                case "RB" -> sheetData.push(new Object[]{twd.word(), "Adverb", count}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
+                case "RBR" -> sheetData.push(new Object[]{twd.word(), "Adverb, comparative", count}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
+                case "RBS" -> sheetData.push(new Object[]{twd.word(), "Adverb, superlative", count}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
+                case "WRB" -> sheetData.push(new Object[]{twd.word(), "Adverb, Wh-", count}, SheetDataContainer.DATASHEETS.ADVERBS_DATA);
+
+                case "CC" -> sheetData.push(new Object[]{twd.word(), "Conjunction, coordinating", count}, SheetDataContainer.DATASHEETS.CONJUNCTIONS_DATA);
                 case "IN" -> {
-                    sheetData.push(new Object[]{twd.word(), "Conjunction, subordinating OR preposition", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.CONJUNCTIONS_DATA);
-                    sheetData.push(new Object[]{twd.word(), "Preposition OR subordinating conjunction", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.PREPOSITIONS_DATA);
+                    sheetData.push(new Object[]{twd.word(), "Conjunction, subordinating OR preposition", count}, SheetDataContainer.DATASHEETS.CONJUNCTIONS_DATA);
+                    sheetData.push(new Object[]{twd.word(), "Preposition OR subordinating conjunction", count}, SheetDataContainer.DATASHEETS.PREPOSITIONS_DATA);
                 }
 
-                case "UH" -> sheetData.push(new Object[]{twd.word(), "Interjection", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.INTERJECTIONS_DATA);
+                case "UH" -> sheetData.push(new Object[]{twd.word(), "Interjection", count}, SheetDataContainer.DATASHEETS.INTERJECTIONS_DATA);
 
-                case "NN" -> sheetData.push(new Object[]{twd.word(), "Noun, singular or mass", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
-                case "NNS" -> sheetData.push(new Object[]{twd.word(), "Noun, plural", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
-                case "NNP" -> sheetData.push(new Object[]{twd.word(), "Noun, proper and singular", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
-                case "NNPS" -> sheetData.push(new Object[]{twd.word(), "Noun, proper and plural", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
+                case "NN" -> sheetData.push(new Object[]{twd.word(), "Noun, singular or mass", count}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
+                case "NNS" -> sheetData.push(new Object[]{twd.word(), "Noun, plural", count}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
+                case "NNP" -> sheetData.push(new Object[]{twd.word(), "Noun, proper and singular", count}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
+                case "NNPS" -> sheetData.push(new Object[]{twd.word(), "Noun, proper and plural", count}, SheetDataContainer.DATASHEETS.NOUNS_DATA);
 
-                case "PRP" -> sheetData.push(new Object[]{twd.word(), "Pronoun, personal", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
-                case "PRP$" -> sheetData.push(new Object[]{twd.word(), "Pronoun, possessive", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
-                case "WP" -> sheetData.push(new Object[]{twd.word(), "Pronoun, Wh-", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
-                case "WP$" -> sheetData.push(new Object[]{twd.word(), "Pronoun, possessive Wh-", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
+                case "PRP" -> sheetData.push(new Object[]{twd.word(), "Pronoun, personal", count}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
+                case "PRP$" -> sheetData.push(new Object[]{twd.word(), "Pronoun, possessive", count}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
+                case "WP" -> sheetData.push(new Object[]{twd.word(), "Pronoun, Wh-", count}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
+                case "WP$" -> sheetData.push(new Object[]{twd.word(), "Pronoun, possessive Wh-", count}, SheetDataContainer.DATASHEETS.PRONOUNS_DATA);
 
-                case "VB" -> sheetData.push(new Object[]{twd.word(), "Verb, base form", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.VERBS_DATA);
-                case "VBD" -> sheetData.push(new Object[]{twd.word(), "Verb, past tense", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.VERBS_DATA);
-                case "VBG" -> sheetData.push(new Object[]{twd.word(), "Verb, gerund or present participle", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.VERBS_DATA);
-                case "VBN" -> sheetData.push(new Object[]{twd.word(), "Verb, past participle", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.VERBS_DATA);
-                case "VBP" -> sheetData.push(new Object[]{twd.word(), "Verb, non-3rd person singular present", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.VERBS_DATA);
-                case "VBZ" -> sheetData.push(new Object[]{twd.word(), "Verb, 3rd person singular present", Integer.toString(parsedFullTextWithWordCount.get(twd))}, SheetDataContainer.DATASHEETS.VERBS_DATA);
+                case "VB" -> sheetData.push(new Object[]{twd.word(), "Verb, base form", count}, SheetDataContainer.DATASHEETS.VERBS_DATA);
+                case "VBD" -> sheetData.push(new Object[]{twd.word(), "Verb, past tense", count}, SheetDataContainer.DATASHEETS.VERBS_DATA);
+                case "VBG" -> sheetData.push(new Object[]{twd.word(), "Verb, gerund or present participle", count}, SheetDataContainer.DATASHEETS.VERBS_DATA);
+                case "VBN" -> sheetData.push(new Object[]{twd.word(), "Verb, past participle", count}, SheetDataContainer.DATASHEETS.VERBS_DATA);
+                case "VBP" -> sheetData.push(new Object[]{twd.word(), "Verb, non-3rd person singular present", count}, SheetDataContainer.DATASHEETS.VERBS_DATA);
+                case "VBZ" -> sheetData.push(new Object[]{twd.word(), "Verb, 3rd person singular present", count}, SheetDataContainer.DATASHEETS.VERBS_DATA);
+
+                case "CD" -> sheetData.push(new Object[]{twd.word(), "Cardinal number", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "DT" -> sheetData.push(new Object[]{twd.word(), "Determiner", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "EX" -> sheetData.push(new Object[]{twd.word(), "Existential there", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "FW" -> sheetData.push(new Object[]{twd.word(), "Foreign word", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "LS" -> sheetData.push(new Object[]{twd.word(), "List item marker", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "MD" -> sheetData.push(new Object[]{twd.word(), "Modal", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "PDT" -> sheetData.push(new Object[]{twd.word(), "Predeterminer", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "POS" -> sheetData.push(new Object[]{twd.word(), "Possessive ending", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "RP" -> sheetData.push(new Object[]{twd.word(), "Particle", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "SYM" -> sheetData.push(new Object[]{twd.word(), "Symbol", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "TO" -> sheetData.push(new Object[]{twd.word(), "\"to\"", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
+                case "WDT" -> sheetData.push(new Object[]{twd.word(), "Wh-determiner", count}, SheetDataContainer.DATASHEETS.MISC_DATA);
             }
         }
 
@@ -120,6 +142,7 @@ public class Main  {
         writeToSpreadsheet(prepositions_sheet, sheetData.prepositions_data);
         writeToSpreadsheet(pronouns_sheet, sheetData.pronouns_data);
         writeToSpreadsheet(verbs_sheet, sheetData.verbs_data);
+        writeToSpreadsheet(misc_sheet, sheetData.misc_data);
 
         FileOutputStream out = new FileOutputStream(selectedFile.getName().substring(0, selectedFile.getName().length()-4) + "_pos_info.xlsx");
         workbook.write(out);
